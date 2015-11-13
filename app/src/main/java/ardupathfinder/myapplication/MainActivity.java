@@ -32,13 +32,29 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(DEFAULT_TOOLBAR_TITLE);
-
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+        // TextView stdout
         stdout = (TextView) findViewById(R.id.stdout);
+        // Setup bluetooth things
+        setupBT();
+        // Enable button
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (bt.getServiceState() == BluetoothState.STATE_CONNECTED) {
+                    bt.disconnect();
+                } else {
+                    Intent intent = new Intent(getApplicationContext(), DeviceList.class);
+                    startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
+                }
+            }
+        });
+    }
 
+    private void setupBT() {
         bt = new BluetoothSPP(this);
 
         if (!bt.isBluetoothAvailable()) {
@@ -52,8 +68,7 @@ public class MainActivity extends AppCompatActivity {
         bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() {
             public void onDataReceived(byte[] data, String message) {
                 Log.i(TAG, "Received: " + message);
-
-                stdout.append(message);
+                stdout.setText(message);
             }
         });
 
@@ -78,17 +93,6 @@ public class MainActivity extends AppCompatActivity {
                         , "Unable to connect", Toast.LENGTH_SHORT).show();
 
                 getSupportActionBar().setTitle(DEFAULT_TOOLBAR_TITLE);
-            }
-        });
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (bt.getServiceState() == BluetoothState.STATE_CONNECTED) {
-                    bt.disconnect();
-                } else {
-                    Intent intent = new Intent(getApplicationContext(), DeviceList.class);
-                    startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
-                }
             }
         });
     }
