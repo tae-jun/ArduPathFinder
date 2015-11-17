@@ -1,4 +1,4 @@
-package ardupathfinder.myapplication;
+package ardupathfinder;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
