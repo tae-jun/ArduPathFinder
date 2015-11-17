@@ -3,6 +3,8 @@ package ardupathfinder.myapplication;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -27,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     FloatingActionButton fab;
     TextView stdout;
+    View map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(DEFAULT_TOOLBAR_TITLE);
         // TextView stdout
         stdout = (TextView) findViewById(R.id.stdout);
+        // View map
+        map = (MapView) findViewById(R.id.map);
         // Setup bluetooth things
         setupBT();
         // Enable button
@@ -52,6 +57,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        map.invalidate();
+        stdout.setText("Hello");
     }
 
     private void setupBT() {
