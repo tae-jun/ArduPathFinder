@@ -19,17 +19,34 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import app.akexorcist.bluetotohspp.library.*;
+import ardupathfinder.message.Message;
+import ardupathfinder.message.ProtocolBrokenException;
+import ardupathfinder.message.StraightMessage;
+import ardupathfinder.message.TurnMessage;
+import ardupathfinder.test.DataGenerator;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private static final String DEFAULT_TOOLBAR_TITLE = "NOT Connected";
 
-    BluetoothSPP bt;
-
     FloatingActionButton fab;
-    TextView stdout;
-    View map;
+    MapView map;
+
+    BluetoothSPP bt;
+    BluetoothSPP.OnDataReceivedListener onDataListener = new BluetoothSPP.OnDataReceivedListener() {
+        @Override
+        public void onDataReceived(byte[] data, String message) {
+            Log.i(TAG, "Received: " + message);
+            // Draw message
+            try {
+                map.draw(Message.parse(message));
+                bt.send(new byte[]{1}, false);
+            } catch (ProtocolBrokenException e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +56,6 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(DEFAULT_TOOLBAR_TITLE);
-        // TextView stdout
-        stdout = (TextView) findViewById(R.id.stdout);
         // View map
         map = (MapView) findViewById(R.id.map);
         // Setup bluetooth things
@@ -58,13 +73,29 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        map.invalidate();
-        stdout.setText("Hello");
+        // TODO: DELETE HERE
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                DataGenerator dataGenerator = new DataGenerator();
+//                try {
+//                    Thread.sleep(1000);
+//                    while (true) {
+//                        Thread.sleep(100);
+//                        map.draw(Message.parse(dataGenerator.get()));
+//                    }
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                } catch (ProtocolBrokenException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
     }
 
     private void setupBT() {
         bt = new BluetoothSPP(this);
-
+        // Check bluetooth available
         if (!bt.isBluetoothAvailable()) {
             Toast.makeText(getApplicationContext()
                     , "Bluetooth is not available"
@@ -72,14 +103,9 @@ public class MainActivity extends AppCompatActivity {
 
             finish();
         }
-
-        bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() {
-            public void onDataReceived(byte[] data, String message) {
-                Log.i(TAG, "Received: " + message);
-                stdout.setText(message);
-            }
-        });
-
+        // Set on data received listener
+        bt.setOnDataReceivedListener(onDataListener);
+        // Set connection listener
         bt.setBluetoothConnectionListener(new BluetoothSPP.BluetoothConnectionListener() {
             public void onDeviceConnected(String name, String address) {
                 Toast.makeText(getApplicationContext()
@@ -87,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
                         , Toast.LENGTH_SHORT).show();
 
                 getSupportActionBar().setTitle(name);
+                bt.send(new byte[]{1}, false);
             }
 
             public void onDeviceDisconnected() {
@@ -115,7 +142,6 @@ public class MainActivity extends AppCompatActivity {
             if (!bt.isServiceAvailable()) {
                 bt.setupService();
                 bt.startService(BluetoothState.DEVICE_OTHER);
-//                setup();
             }
         }
     }
@@ -138,15 +164,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
-//    public void setup() {
-//        Button btnSend = (Button) findViewById(R.id.btnSend);
-//        btnSend.setOnClickListener(new OnClickListener() {
-//            public void onClick(View v) {
-//                bt.send("Text", true);
-//            }
-//        });
-//    }
 
     @Override
     protected void onDestroy() {

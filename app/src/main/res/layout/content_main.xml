@@ -13,14 +13,11 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <TextView
-        android:id="@+id/stdout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
     <ardupathfinder.MapView
         android:id="@+id/map"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layerType="software" />
 
 </LinearLayout>
