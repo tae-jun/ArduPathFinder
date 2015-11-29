@@ -22,11 +22,11 @@ import static java.lang.Math.*;
 public class MapView extends View {
 
     private static final String TAG = "MapView";
-    private static final float SCALE_RATIO = 1.f;
+    private static final float ZOOM_RATIO = 0.9f;
 
     private float[] pos = {0f, 0f};
     private double radian = toRadians(90.0);
-    private float scale = 0.8f;
+    private float scale = 1.f;
     private float tranX = 0.f;
     private float tranY = 0.f;
 
@@ -114,8 +114,8 @@ public class MapView extends View {
         // Check out of canvas
         if (isOutOfCanvas()) {
             // Compute scale
-            scale *= SCALE_RATIO;
-            scale *= SCALE_RATIO;
+            scale *= ZOOM_RATIO;
+            scale *= ZOOM_RATIO;
             // Compute translate
             tranX = (getScaledWidth() - getWidth()) / 2;
             tranY = (getScaledHeight() - getHeight()) / 2;
@@ -147,10 +147,10 @@ public class MapView extends View {
         super.onLayout(changed, left, top, right, bottom);
 
         arduPath.reset();
-        arduPath.moveTo(getWidth() / 2, getHeight() * 0.5f);
+        arduPath.moveTo(getWidth() * 0.5f, getHeight() * 0.7f);
 
         obPath.reset();
-        obPath.moveTo(getWidth() / 2, getHeight() * 0.5f);
+        obPath.moveTo(getWidth() * 0.5f, getHeight() * 0.7f);
     }
 
     private int getScaledWidth() {

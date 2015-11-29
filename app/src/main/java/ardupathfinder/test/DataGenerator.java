@@ -13,13 +13,13 @@ public class DataGenerator {
 
     public String get() {
         double ran = Math.random();
-        String record = "%d,%d,%d,%d,%d";
+        String record = "%d,%d,%d,%d,%d,%d";
         if (ran < 0.2)
-            record = String.format(record, 0, 10, random(50, 100), random(50, 100), random(50, 100));
+            record = String.format(record, 0, 300, random(50, 100), random(50, 100), random(50, 100), 90);
         else if (ran > 0.8)
-            record = String.format(record, 10, 0, random(50, 100), random(50, 100), random(50, 100));
+            record = String.format(record, 300, 0, random(50, 100), random(50, 100), random(50, 100), 90);
         else
-            record = String.format(record, random(1, 5), random(1, 5), 5000, random(50, 100), random(50, 100));
+            record = String.format(record, random(1000), random(1, 5), 5000, random(50, 100), random(50, 100), 90);
 
         Log.v(TAG, record);
         return record;
