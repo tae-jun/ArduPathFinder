@@ -35,7 +35,7 @@ public class MapView extends View {
     PathMeasure pm = new PathMeasure(arduPath, false);
 
     private Paint obPaint;
-    private float obRadius = 10.f;
+    private float obRadius = 5.f;
     Path obPath = new Path();
 
 
