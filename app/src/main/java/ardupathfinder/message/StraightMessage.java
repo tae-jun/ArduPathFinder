@@ -5,7 +5,7 @@ package ardupathfinder.message;
  */
 public class StraightMessage extends Message {
 
-    private static final double RUN_RATIO = 262.0 / 1000.0;
+    private static final double RUN_RATIO = 250.0 / 1000.0;
     private int movedDistance;
 
     protected StraightMessage(MessageProtocol mp) {

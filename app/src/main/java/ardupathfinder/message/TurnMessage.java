@@ -10,7 +10,7 @@ import static ardupathfinder.message.MessageProtocol.*;
 public class TurnMessage extends Message {
 
     private static final String TAG = "TurnMessage";
-    private static final double TURN_RATIO = 360.0 / 1100.0;      // 1700ms -> 360 degree
+    private static final double TURN_RATIO = 320.0 / 1100.0;      // 1700ms -> 360 degree
 
     private int direction;
     private int wheelRotation;
